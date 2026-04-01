@@ -1,6 +1,6 @@
 import { feature } from 'src/_stubs/bun-bundle.js'
 import { z } from 'zod/v4'
-import { getFeatureValue_CACHED_MAY_BE_STALE } from '../../services/analytics/growthbook.js'
+import { getFeatureValue_CACHED_MAY_BE_STALE } from '../../services/analytics-stub.js'
 import { buildTool, type ToolDef } from '../../Tool.js'
 import { isAgentSwarmsEnabled } from '../../utils/agentSwarmsEnabled.js'
 import {

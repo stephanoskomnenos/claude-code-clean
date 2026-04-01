@@ -1,9 +1,10 @@
 {
-  "name": "@anthropic-ai/claude-code-dev",
-  "version": "1.0.0-dev",
+  "name": "claude-code-clean",
+  "version": "1.0.0-clean",
+  "description": "Privacy-focused fork of Claude Code with all telemetry, analytics, and fingerprinting removed",
   "type": "module",
   "bin": {
-    "claude": "./src/entrypoints/cli.tsx"
+    "claude-clean": "./src/entrypoints/cli.tsx"
   },
   "scripts": {
     "start": "bun run --preload ./stubs/globals.ts ./src/entrypoints/cli.tsx",

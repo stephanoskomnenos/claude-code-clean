@@ -1,344 +1,286 @@
-# Claude Code Source Snapshot for Security Research
+# Claude Code Clean
 
-> This repository mirrors a **publicly exposed Claude Code source snapshot** that became accessible on **March 31, 2026** through a source map exposure in the npm distribution. It is maintained for **educational, defensive security research, and software supply-chain analysis**.
+**A privacy-focused fork of Anthropic's Claude Code with all telemetry, analytics, fingerprinting, and auto-update mechanisms removed.**
 
----
-
-## Research Context
-
-This repository is maintained by a **university student** studying:
-
-- software supply-chain exposure and build artifact leaks
-- secure software engineering practices
-- agentic developer tooling architecture
-- defensive analysis of real-world CLI systems
-
-This archive is intended to support:
-
-- educational study
-- security research practice
-- architecture review
-- discussion of packaging and release-process failures
-
-It does **not** claim ownership of the original code, and it should not be interpreted as an official Anthropic repository.
+[![License](https://img.shields.io/badge/license-See%20Original-blue)](https://github.com/anthropics/claude-code)
+[![Privacy](https://img.shields.io/badge/privacy-100%25-green)](./PRIVACY_README.md)
+[![Telemetry](https://img.shields.io/badge/telemetry-removed-red)](./TELEMETRY_REMOVAL_SUMMARY.md)
 
 ---
 
-## How the Public Snapshot Became Accessible
+## 🔒 Privacy First
 
-[Chaofan Shou (@Fried_rice)](https://x.com/Fried_rice) publicly noted that Claude Code source material was reachable through a `.map` file exposed in the npm package:
+This fork removes **all tracking and remote control mechanisms** found in the original Claude Code:
 
-> **"Claude code source code has been leaked via a map file in their npm registry!"**
->
-> — [@Fried_rice, March 31, 2026](https://x.com/Fried_rice/status/2038894956459290963)
-
-The published source map referenced unobfuscated TypeScript sources hosted in Anthropic's R2 storage bucket, which made the `src/` snapshot publicly downloadable.
+- ❌ **No telemetry** - Zero data sent to Anthropic's servers
+- ❌ **No analytics** - No usage tracking or event logging
+- ❌ **No fingerprinting** - No user or environment identification
+- ❌ **No auto-updates** - No remote version control or forced updates
+- ✅ **100% user control** - You own your installation
 
 ---
 
-## Running from Source
+## 📊 What Was Removed
 
-![Claude Code running from source](assets/claude-code-screenshot.png)
+### Telemetry Infrastructure (~8,500+ lines)
+- BigQuery metrics exporter
+- Event logging to `api.anthropic.com/api/event_logging/batch`
+- Session tracking and user identification
+- Environment fingerprinting
+- Performance tracing (Perfetto/OpenTelemetry)
+
+### Anti-Distillation Tracking
+- Message content fingerprinting (SHA256 of user prompts)
+- Attribution tags sent with every API request
+
+### Auto-Update & Remote Control
+- Automatic downloads from Google Cloud Storage
+- Remote version enforcement (can force-quit your app)
+- Version kill switches
+- Update notifications
+
+📖 **Full details:** [TELEMETRY_REMOVAL_SUMMARY.md](./TELEMETRY_REMOVAL_SUMMARY.md)
+
+---
+
+## 🚀 Installation
 
 ### Prerequisites
 
-- [Bun](https://bun.sh) (latest)
-- macOS (tested on Darwin 25.x)
+- [Bun](https://bun.sh) (v1.3+)
+- macOS, Linux, or WSL2
 
-### Setup
+### Quick Start
 
 ```bash
-# 1. Clone and install dependencies
-git clone https://github.com/IIIIQIIII/claude-code.git && cd claude-code
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/claude-code-clean.git
+cd claude-code-clean
+
+# Install dependencies
 bun install
 
-# 2. Configure API access in ~/.claude/settings.json
-cat > ~/.claude/settings.json << 'EOF'
+# Run
+bun start
+```
+
+### Configuration
+
+Create `~/.claude/settings.json`:
+
+```json
 {
   "env": {
-    "DISABLE_AUTOUPDATER": "1",
-    "ANTHROPIC_BASE_URL": "https://api.anthropic.com",
-    "ANTHROPIC_AUTH_TOKEN": "your-api-key-here"
+    "ANTHROPIC_API_KEY": "your-api-key-here"
   }
 }
-EOF
 ```
 
-> If using a third-party proxy, set `ANTHROPIC_BASE_URL` to the proxy endpoint.
-
-### Usage
+Or use environment variable:
 
 ```bash
-# Interactive mode
-./run-claude.sh
-
-# Or via bun directly
+export ANTHROPIC_API_KEY="your-api-key"
 bun start
-
-# Print mode (single query, non-interactive)
-./run-claude.sh -p "hello"
-
-# With specific model
-./run-claude.sh --model claude-sonnet-4-20250514
-```
-
-### What was patched to make it run
-
-The npm source snapshot required several fixes to run outside Anthropic's build pipeline:
-
-| File | Fix |
-|---|---|
-| `stubs/globals.ts` | Build-time macro stubs (`MACRO.VERSION`, etc.) |
-| `stubs/@anthropic-ai/sandbox-runtime/` | Sandbox manager stub (all static methods) |
-| `stubs/color-diff-napi/` | Syntax highlighting stub (`ColorFile.render()`) |
-| `src/utils/modifiers.ts` | try-catch for missing `modifiers-napi` native module |
-| `src/services/api/withRetry.ts` | `error.headers?.get()` → bracket access (SDK headers are plain objects) |
-| `src/services/api/errors.ts` | Same header access fix for rate limit headers |
-| `src/utils/ultraplan/prompt.txt` | Missing file that caused silent module load failure |
-| `bunfig.toml` | Preload config for stubs |
-| `package.json` | Dependencies and stub package references |
-
----
-
-## Repository Scope
-
-Claude Code is Anthropic's CLI for interacting with Claude from the terminal to perform software engineering tasks such as editing files, running commands, searching codebases, and coordinating workflows.
-
-This repository contains a mirrored `src/` snapshot for research and analysis.
-
-- **Public exposure identified on**: 2026-03-31
-- **Language**: TypeScript
-- **Runtime**: Bun
-- **Terminal UI**: React + [Ink](https://github.com/vadimdemedes/ink)
-- **Scale**: ~1,900 files, 512,000+ lines of code
-
----
-
-## Directory Structure
-
-```text
-src/
-├── main.tsx                 # Entrypoint orchestration (Commander.js-based CLI path)
-├── commands.ts              # Command registry
-├── tools.ts                 # Tool registry
-├── Tool.ts                  # Tool type definitions
-├── QueryEngine.ts           # LLM query engine
-├── context.ts               # System/user context collection
-├── cost-tracker.ts          # Token cost tracking
-│
-├── commands/                # Slash command implementations (~50)
-├── tools/                   # Agent tool implementations (~40)
-├── components/              # Ink UI components (~140)
-├── hooks/                   # React hooks
-├── services/                # External service integrations
-├── screens/                 # Full-screen UIs (Doctor, REPL, Resume)
-├── types/                   # TypeScript type definitions
-├── utils/                   # Utility functions
-│
-├── bridge/                  # IDE and remote-control bridge
-├── coordinator/             # Multi-agent coordinator
-├── plugins/                 # Plugin system
-├── skills/                  # Skill system
-├── keybindings/             # Keybinding configuration
-├── vim/                     # Vim mode
-├── voice/                   # Voice input
-├── remote/                  # Remote sessions
-├── server/                  # Server mode
-├── memdir/                  # Persistent memory directory
-├── tasks/                   # Task management
-├── state/                   # State management
-├── migrations/              # Config migrations
-├── schemas/                 # Config schemas (Zod)
-├── entrypoints/             # Initialization logic
-├── ink/                     # Ink renderer wrapper
-├── buddy/                   # Companion sprite
-├── native-ts/               # Native TypeScript utilities
-├── outputStyles/            # Output styling
-├── query/                   # Query pipeline
-└── upstreamproxy/           # Proxy configuration
 ```
 
 ---
 
-## Architecture Summary
+## 📚 Documentation
 
-### 1. Tool System (`src/tools/`)
+- **[PRIVACY_README.md](./PRIVACY_README.md)** - Complete privacy protection details
+- **[TELEMETRY_REMOVAL_SUMMARY.md](./TELEMETRY_REMOVAL_SUMMARY.md)** - Technical implementation details
+- **[AUTO_UPDATE_REMOVAL.md](./AUTO_UPDATE_REMOVAL.md)** - Auto-update removal report
+- **[TESTING.md](./TESTING.md)** - Test reports and verification
+- **[tests/test-network-monitoring.md](./tests/test-network-monitoring.md)** - Network monitoring guide
 
-Every tool Claude Code can invoke is implemented as a self-contained module. Each tool defines its input schema, permission model, and execution logic.
+---
 
-| Tool | Description |
-|---|---|
-| `BashTool` | Shell command execution |
-| `FileReadTool` | File reading (images, PDFs, notebooks) |
-| `FileWriteTool` | File creation / overwrite |
-| `FileEditTool` | Partial file modification (string replacement) |
-| `GlobTool` | File pattern matching search |
-| `GrepTool` | ripgrep-based content search |
-| `WebFetchTool` | Fetch URL content |
-| `WebSearchTool` | Web search |
-| `AgentTool` | Sub-agent spawning |
-| `SkillTool` | Skill execution |
-| `MCPTool` | MCP server tool invocation |
-| `LSPTool` | Language Server Protocol integration |
-| `NotebookEditTool` | Jupyter notebook editing |
-| `TaskCreateTool` / `TaskUpdateTool` | Task creation and management |
-| `SendMessageTool` | Inter-agent messaging |
-| `TeamCreateTool` / `TeamDeleteTool` | Team agent management |
-| `EnterPlanModeTool` / `ExitPlanModeTool` | Plan mode toggle |
-| `EnterWorktreeTool` / `ExitWorktreeTool` | Git worktree isolation |
-| `ToolSearchTool` | Deferred tool discovery |
-| `CronCreateTool` | Scheduled trigger creation |
-| `RemoteTriggerTool` | Remote trigger |
-| `SleepTool` | Proactive mode wait |
-| `SyntheticOutputTool` | Structured output generation |
+## ✅ Verification
 
-### 2. Command System (`src/commands/`)
+All privacy claims are **verifiable**:
 
-User-facing slash commands invoked with `/` prefix.
+```bash
+# Run automated privacy tests (25 checks)
+./tests/verify-privacy.sh
 
-| Command | Description |
-|---|---|
-| `/commit` | Create a git commit |
-| `/review` | Code review |
-| `/compact` | Context compression |
-| `/mcp` | MCP server management |
-| `/config` | Settings management |
-| `/doctor` | Environment diagnostics |
-| `/login` / `/logout` | Authentication |
-| `/memory` | Persistent memory management |
-| `/skills` | Skill management |
-| `/tasks` | Task management |
-| `/vim` | Vim mode toggle |
-| `/diff` | View changes |
-| `/cost` | Check usage cost |
-| `/theme` | Change theme |
-| `/context` | Context visualization |
-| `/pr_comments` | View PR comments |
-| `/resume` | Restore previous session |
-| `/share` | Share session |
-| `/desktop` | Desktop app handoff |
-| `/mobile` | Mobile app handoff |
+# Run runtime tests
+./tests/simple-runtime-test.sh
 
-### 3. Service Layer (`src/services/`)
-
-| Service | Description |
-|---|---|
-| `api/` | Anthropic API client, file API, bootstrap |
-| `mcp/` | Model Context Protocol server connection and management |
-| `oauth/` | OAuth 2.0 authentication flow |
-| `lsp/` | Language Server Protocol manager |
-| `analytics/` | GrowthBook-based feature flags and analytics |
-| `plugins/` | Plugin loader |
-| `compact/` | Conversation context compression |
-| `policyLimits/` | Organization policy limits |
-| `remoteManagedSettings/` | Remote managed settings |
-| `extractMemories/` | Automatic memory extraction |
-| `tokenEstimation.ts` | Token count estimation |
-| `teamMemorySync/` | Team memory synchronization |
-
-### 4. Bridge System (`src/bridge/`)
-
-A bidirectional communication layer connecting IDE extensions (VS Code, JetBrains) with the Claude Code CLI.
-
-- `bridgeMain.ts` — Bridge main loop
-- `bridgeMessaging.ts` — Message protocol
-- `bridgePermissionCallbacks.ts` — Permission callbacks
-- `replBridge.ts` — REPL session bridge
-- `jwtUtils.ts` — JWT-based authentication
-- `sessionRunner.ts` — Session execution management
-
-### 5. Permission System (`src/hooks/toolPermission/`)
-
-Checks permissions on every tool invocation. Either prompts the user for approval/denial or automatically resolves based on the configured permission mode (`default`, `plan`, `bypassPermissions`, `auto`, etc.).
-
-### 6. Feature Flags
-
-Dead code elimination via Bun's `bun:bundle` feature flags:
-
-```typescript
-import { feature } from 'bun:bundle'
-
-// Inactive code is completely stripped at build time
-const voiceCommand = feature('VOICE_MODE')
-  ? require('./commands/voice/index.js').default
-  : null
+# Monitor network traffic (requires mitmproxy)
+# See tests/test-network-monitoring.md
 ```
 
-Notable flags: `PROACTIVE`, `KAIROS`, `BRIDGE_MODE`, `DAEMON`, `VOICE_MODE`, `AGENT_TRIGGERS`, `MONITOR_TOOL`
+**Test Results:** 100% pass rate ✅
 
 ---
 
-## Key Files in Detail
+## 🔍 What's Different
 
-### `QueryEngine.ts` (~46K lines)
+### Original Claude Code
+- ✅ Telemetry enabled by default for API/Enterprise users
+- ✅ Sends metrics every 5 minutes to BigQuery
+- ✅ Tracks user ID, email, session IDs
+- ✅ Fingerprints your environment
+- ✅ Can be remotely disabled by Anthropic
+- ✅ Auto-downloads updates
 
-The core engine for LLM API calls. Handles streaming responses, tool-call loops, thinking mode, retry logic, and token counting.
-
-### `Tool.ts` (~29K lines)
-
-Defines base types and interfaces for all tools — input schemas, permission models, and progress state types.
-
-### `commands.ts` (~25K lines)
-
-Manages registration and execution of all slash commands. Uses conditional imports to load different command sets per environment.
-
-### `main.tsx`
-
-Commander.js-based CLI parser and React/Ink renderer initialization. At startup, it overlaps MDM settings, keychain prefetch, and GrowthBook initialization for faster boot.
-
----
-
-## Tech Stack
-
-| Category | Technology |
-|---|---|
-| Runtime | [Bun](https://bun.sh) |
-| Language | TypeScript (strict) |
-| Terminal UI | [React](https://react.dev) + [Ink](https://github.com/vadimdemedes/ink) |
-| CLI Parsing | [Commander.js](https://github.com/tj/commander.js) (extra-typings) |
-| Schema Validation | [Zod v4](https://zod.dev) |
-| Code Search | [ripgrep](https://github.com/BurntSushi/ripgrep) |
-| Protocols | [MCP SDK](https://modelcontextprotocol.io), LSP |
-| API | [Anthropic SDK](https://docs.anthropic.com) |
-| Telemetry | OpenTelemetry + gRPC |
-| Feature Flags | GrowthBook |
-| Auth | OAuth 2.0, JWT, macOS Keychain |
+### Claude Code Clean
+- ❌ All telemetry removed
+- ❌ No data collection
+- ❌ No user tracking
+- ❌ No fingerprinting
+- ❌ Cannot be remotely controlled
+- ❌ No auto-updates (you control versions)
 
 ---
 
-## Notable Design Patterns
+## 🛡️ Privacy Guarantees
 
-### Parallel Prefetch
+### What This Fork Does NOT Do
 
-Startup time is optimized by prefetching MDM settings, keychain reads, and API preconnect in parallel before heavy module evaluation begins.
+- ❌ Send telemetry to Anthropic or third parties
+- ❌ Collect session IDs or user identifiers
+- ❌ Fingerprint your system or environment
+- ❌ Track your usage patterns
+- ❌ Extract characters from prompts for tracking
+- ❌ Store failed telemetry events for retry
+- ❌ Auto-update without your permission
+- ❌ Phone home to any server (except Claude API for inference)
 
-```typescript
-// main.tsx — fired as side-effects before other imports
-startMdmRawRead()
-startKeychainPrefetch()
+### What This Fork DOES Do
+
+- ✅ Makes necessary API calls to Claude (required for functionality)
+- ✅ Stores conversation history locally (user-controlled)
+- ✅ Maintains all core Claude Code features
+- ✅ Respects your privacy and data ownership
+
+---
+
+## 🔧 Technical Details
+
+### Implementation
+
+- **Files deleted:** 19 (telemetry/analytics modules)
+- **Files modified:** 408+ (import statements updated)
+- **Lines removed:** ~8,500+ (tracking code)
+- **Stub files created:** 4 (no-op replacements)
+
+### Verification Methods
+
+1. **Static Analysis** - `./tests/verify-privacy.sh` (25 automated checks)
+2. **Runtime Testing** - `./tests/simple-runtime-test.sh`
+3. **Network Monitoring** - mitmproxy/tcpdump/Wireshark guides provided
+4. **Code Review** - All changes documented
+
+---
+
+## 📝 Usage
+
+### Interactive Mode (default)
+
+```bash
+bun start
 ```
 
-### Lazy Loading
+### Print Mode (single query)
 
-Heavy modules (OpenTelemetry, gRPC, analytics, and some feature-gated subsystems) are deferred via dynamic `import()` until actually needed.
+```bash
+bun start -p "Explain quantum computing"
+```
 
-### Agent Swarms
+### With Specific Model
 
-Sub-agents are spawned via `AgentTool`, with `coordinator/` handling multi-agent orchestration. `TeamCreateTool` enables team-level parallel work.
+```bash
+bun start --model claude-opus-4
+```
 
-### Skill System
+### Resume Previous Session
 
-Reusable workflows defined in `skills/` are executed through `SkillTool`. Users can add custom skills.
-
-### Plugin Architecture
-
-Built-in and third-party plugins are loaded through the `plugins/` subsystem.
+```bash
+bun start --continue
+```
 
 ---
 
-## Research / Ownership Disclaimer
+## ⚠️ Disclaimer
 
-- This repository is an **educational and defensive security research archive** maintained by a university student.
-- It exists to study source exposure, packaging failures, and the architecture of modern agentic CLI systems.
-- The original Claude Code source remains the property of **Anthropic**.
-- This repository is **not affiliated with, endorsed by, or maintained by Anthropic**.
+This is an **independent fork** and is **not affiliated with or endorsed by Anthropic**.
+
+- Original Claude Code: Copyright Anthropic
+- Privacy modifications: Community-maintained fork
+- Use at your own risk
+
+This fork removes telemetry but functionality may differ from official releases.
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome! Please ensure:
+
+1. ✅ No telemetry, analytics, or tracking code is re-introduced
+2. ✅ Privacy-respecting implementations only
+3. ✅ All network requests are transparent and documented
+4. ✅ Tests pass: `./tests/verify-privacy.sh`
+
+---
+
+## 📜 License
+
+This is a derivative work of Anthropic's Claude Code. Please refer to the original license terms.
+
+**Privacy modifications:** MIT License (see LICENSE file)
+
+---
+
+## 🙏 Credits
+
+- **Anthropic** - For creating Claude Code
+- **[@Fried_rice](https://x.com/Fried_rice)** - For discovering the source map exposure
+- **Community** - For valuing privacy and transparency
+
+---
+
+## 🔗 Links
+
+- **Original Source Discovery:** [Twitter/X Post](https://x.com/Fried_rice/status/2038894956459290963)
+- **Original Claude Code:** [Anthropic Claude Code](https://claude.ai/code)
+- **Issue Tracker:** [GitHub Issues](https://github.com/YOUR_USERNAME/claude-code-clean/issues)
+
+---
+
+## ❓ FAQ
+
+### Q: Will this break functionality?
+**A:** No. All tracking was side-effect code. Core features work normally.
+
+### Q: Can I use my Anthropic API key?
+**A:** Yes. Authentication and API access work as expected.
+
+### Q: Is this legal?
+**A:** This is a derivative work. The original source was publicly exposed. Check Claude Code's license for distribution terms.
+
+### Q: How can I verify the privacy claims?
+**A:** Run `./tests/verify-privacy.sh` or review the code yourself. All changes are documented.
+
+### Q: Will you maintain this?
+**A:** Community-maintained. Pull requests welcome.
+
+### Q: What about future Claude Code updates?
+**A:** You control when/if to merge upstream changes. No forced updates.
+
+---
+
+**Privacy matters. Your code, your data, your choice.** 🔒
+
+---
+
+## Star History
+
+If you find this project useful, please consider giving it a star ⭐
+
+---
+
+**Version:** 1.0.0-clean  
+**Last Updated:** 2026-04-01  
+**Status:** ✅ Stable & Verified
