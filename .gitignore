@@ -3,3 +3,4 @@ bun.lock
 *.log
 .env
 .DS_Store
+.claude/
