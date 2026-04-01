@@ -70,7 +70,7 @@ Create `~/.claude/settings.json`:
 ```json
 {
   "env": {
-    "ANTHROPIC_API_KEY": "your-api-key-here"
+    "ANTHROPIC_AUTH_TOKEN": "your-api-key-here"
   }
 }
 ```
@@ -78,7 +78,7 @@ Create `~/.claude/settings.json`:
 Or use environment variable:
 
 ```bash
-export ANTHROPIC_API_KEY="your-api-key"
+export ANTHROPIC_AUTH_TOKEN="your-api-key"
 bun start
 ```
 
