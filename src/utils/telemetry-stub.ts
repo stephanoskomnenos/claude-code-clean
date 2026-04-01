@@ -3,6 +3,9 @@
  * All functions are no-ops to allow code to compile without telemetry infrastructure
  */
 
+// Type stubs
+export type Span = { end: () => void; setAttribute: (key: string, value: any) => void }
+
 // No-op telemetry functions
 export function logOTelEvent(...args: any[]): void {
   // No-op
@@ -81,15 +84,6 @@ export function recordApiLatency(...args: any[]): void {
   // No-op
 }
 
-// Perfetto tracing stubs
-export function registerAgent(...args: any[]): void {
-  // No-op
-}
-
-export function unregisterAgent(...args: any[]): void {
-  // No-op
-}
-
 export function beginPerfettoSpan(...args: any[]): any {
   return { end: () => {} };
 }
@@ -109,10 +103,6 @@ export function flushTelemetry(...args: any[]): Promise<void> {
 
 // Additional telemetry span stubs
 export function startToolBlockedOnUserSpan(...args: any[]): any {
-  return { end: () => {}, setAttribute: () => {} };
-}
-
-export function startToolSpan(...args: any[]): any {
   return { end: () => {}, setAttribute: () => {} };
 }
 
@@ -142,10 +132,6 @@ export function startToolExecutionSpan(...args: any[]): any {
 }
 
 export function endToolBlockedOnUserSpan(...args: any[]): void {
-  // No-op
-}
-
-export function endToolSpan(...args: any[]): void {
   // No-op
 }
 
