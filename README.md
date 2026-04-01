@@ -3,8 +3,8 @@
 **A privacy-focused fork of Anthropic's Claude Code with all telemetry, analytics, fingerprinting, and auto-update mechanisms removed.**
 
 [![License](https://img.shields.io/badge/license-See%20Original-blue)](https://github.com/anthropics/claude-code)
-[![Privacy](https://img.shields.io/badge/privacy-100%25-green)](./PRIVACY_README.md)
-[![Telemetry](https://img.shields.io/badge/telemetry-removed-red)](./TELEMETRY_REMOVAL_SUMMARY.md)
+[![Privacy](https://img.shields.io/badge/privacy-100%25-green)](https://github.com/IIIIQIIII/claude-code-clean)
+[![Telemetry](https://img.shields.io/badge/telemetry-removed-red)](https://github.com/IIIIQIIII/claude-code-clean)
 
 ---
 
@@ -39,7 +39,6 @@ This fork removes **all tracking and remote control mechanisms** found in the or
 - Version kill switches
 - Update notifications
 
-📖 **Full details:** [TELEMETRY_REMOVAL_SUMMARY.md](./TELEMETRY_REMOVAL_SUMMARY.md)
 
 ---
 
@@ -54,7 +53,7 @@ This fork removes **all tracking and remote control mechanisms** found in the or
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/claude-code-clean.git
+git clone https://github.com/IIIIQIIII/claude-code-clean.git
 cd claude-code-clean
 
 # Install dependencies
@@ -82,16 +81,6 @@ Or use environment variable:
 export ANTHROPIC_API_KEY="your-api-key"
 bun start
 ```
-
----
-
-## 📚 Documentation
-
-- **[PRIVACY_README.md](./PRIVACY_README.md)** - Complete privacy protection details
-- **[TELEMETRY_REMOVAL_SUMMARY.md](./TELEMETRY_REMOVAL_SUMMARY.md)** - Technical implementation details
-- **[AUTO_UPDATE_REMOVAL.md](./AUTO_UPDATE_REMOVAL.md)** - Auto-update removal report
-- **[TESTING.md](./TESTING.md)** - Test reports and verification
-- **[tests/test-network-monitoring.md](./tests/test-network-monitoring.md)** - Network monitoring guide
 
 ---
 
@@ -245,7 +234,7 @@ This is a derivative work of Anthropic's Claude Code. Please refer to the origin
 
 - **Original Source Discovery:** [Twitter/X Post](https://x.com/Fried_rice/status/2038894956459290963)
 - **Original Claude Code:** [Anthropic Claude Code](https://claude.ai/code)
-- **Issue Tracker:** [GitHub Issues](https://github.com/YOUR_USERNAME/claude-code-clean/issues)
+- **Issue Tracker:** [GitHub Issues](https://github.com/IIIIQIIII/claude-code-clean/issues)
 
 ---
 
