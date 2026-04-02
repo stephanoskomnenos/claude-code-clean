@@ -141,6 +141,7 @@ All privacy claims are **verifiable**:
 - ✅ Makes necessary API calls to Claude (required for functionality)
 - ✅ Stores conversation history locally (user-controlled)
 - ✅ Maintains all core Claude Code features
+- ✅ Built-in computer use via open-source MCP server (no proprietary native modules)
 - ✅ Respects your privacy and data ownership
 
 ---
@@ -163,6 +164,36 @@ All privacy claims are **verifiable**:
 
 ---
 
+## 🖥️ Computer Use (Screen Control)
+
+Claude Code Clean includes built-in computer use support via [computer-use-mcp](https://github.com/domdomegg/computer-use-mcp), pre-configured in `.mcp.json`. This allows Claude to take screenshots, move the mouse, click, type, scroll, and drag on your desktop.
+
+### Prerequisites
+
+- **Node.js** (v18+) — required for the MCP server (runs via `npx`)
+- **macOS Accessibility permission** — grant your terminal app access in System Settings > Privacy & Security > Accessibility
+
+### How It Works
+
+On startup, Claude Code Clean automatically launches the `computer-control` MCP server. No manual setup needed — just start a session and ask Claude to interact with your screen:
+
+```
+> Take a screenshot and tell me what you see
+> Open Safari and navigate to github.com
+> Click on the search bar and type "claude code"
+```
+
+The tool is exposed as `mcp__computer-control__computer` with actions: `get_screenshot`, `left_click`, `right_click`, `middle_click`, `double_click`, `mouse_move`, `left_click_drag`, `scroll`, `key`, `type`, `get_cursor_position`.
+
+### Safety Notes
+
+- The MCP server controls your real mouse and keyboard — **no sandbox isolation**
+- Always supervise Claude during computer use sessions
+- Use `Ctrl+C` to stop at any time
+- Consider using a dedicated macOS user account for testing
+
+---
+
 ## 📝 Usage
 
 ### Interactive Mode (default)
@@ -180,7 +211,7 @@ bun start -p "Explain quantum computing"
 ### With Specific Model
 
 ```bash
-bun start --model claude-opus-4
+bun start --model claude-sonnet-4-6
 ```
 
 ### Resume Previous Session
@@ -271,5 +302,5 @@ If you find this project useful, please consider giving it a star ⭐
 ---
 
 **Version:** 1.0.0-clean  
-**Last Updated:** 2026-04-01  
+**Last Updated:** 2026-04-02  
 **Status:** ✅ Stable & Verified
