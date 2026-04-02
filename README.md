@@ -70,14 +70,18 @@ Create `~/.claude/settings.json`:
 ```json
 {
   "env": {
+    "ANTHROPIC_BASE_URL": "https://api.anthropic.com",
     "ANTHROPIC_AUTH_TOKEN": "your-api-key-here"
   }
 }
 ```
 
-Or use environment variable:
+> If using a third-party proxy, set `ANTHROPIC_BASE_URL` to the proxy endpoint.
+
+Or use environment variables:
 
 ```bash
+export ANTHROPIC_BASE_URL="https://api.anthropic.com"
 export ANTHROPIC_AUTH_TOKEN="your-api-key"
 bun start
 ```
@@ -191,6 +195,85 @@ The tool is exposed as `mcp__computer-control__computer` with actions: `get_scre
 - Always supervise Claude during computer use sessions
 - Use `Ctrl+C` to stop at any time
 - Consider using a dedicated macOS user account for testing
+
+---
+
+## 🌐 OpenAI-Compatible Model Support
+
+Claude Code Clean supports **any OpenAI-compatible API** as the backend LLM, including OpenAI, OpenRouter, DeepSeek, Ollama, LM Studio, Together AI, Groq, Mistral, Azure OpenAI, and more.
+
+### Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `CLAUDE_CODE_USE_OPENAI` | Yes | Set to `1` to enable |
+| `OPENAI_API_KEY` | Yes* | API key (* optional for local models) |
+| `OPENAI_BASE_URL` | No | API base URL (default: `https://api.openai.com/v1`) |
+| `OPENAI_MODEL` | No | Model ID (default: `gpt-4o`) |
+
+### Examples
+
+**OpenAI directly:**
+
+```bash
+CLAUDE_CODE_USE_OPENAI=1 \
+OPENAI_API_KEY=sk-... \
+OPENAI_MODEL=gpt-4o \
+bun start
+```
+
+**OpenRouter (access 200+ models):**
+
+```bash
+CLAUDE_CODE_USE_OPENAI=1 \
+OPENAI_API_KEY=sk-or-v1-... \
+OPENAI_BASE_URL=https://openrouter.ai/api/v1 \
+OPENAI_MODEL=openai/gpt-5.4 \
+bun start
+```
+
+**DeepSeek:**
+
+```bash
+CLAUDE_CODE_USE_OPENAI=1 \
+OPENAI_API_KEY=sk-... \
+OPENAI_BASE_URL=https://api.deepseek.com/v1 \
+OPENAI_MODEL=deepseek-chat \
+bun start
+```
+
+**Ollama (local):**
+
+```bash
+CLAUDE_CODE_USE_OPENAI=1 \
+OPENAI_BASE_URL=http://localhost:11434/v1 \
+OPENAI_MODEL=llama3.3 \
+bun start
+```
+
+**LM Studio (local):**
+
+```bash
+CLAUDE_CODE_USE_OPENAI=1 \
+OPENAI_BASE_URL=http://localhost:1234/v1 \
+OPENAI_MODEL=your-model-name \
+bun start
+```
+
+**Azure OpenAI:**
+
+```bash
+CLAUDE_CODE_USE_OPENAI=1 \
+OPENAI_API_KEY=your-azure-key \
+OPENAI_BASE_URL=https://your-resource.openai.azure.com/openai/deployments/your-deployment \
+OPENAI_MODEL=gpt-4o \
+AZURE_OPENAI_API_VERSION=2024-12-01-preview \
+bun start
+```
+
+### How It Works
+
+An API shim layer (`src/services/api/openaiShim.ts`) transparently translates between Anthropic message format and OpenAI Chat Completions format. All Claude Code tools (bash, file read/write, grep, glob, agents, MCP, etc.) work normally -- only the underlying LLM changes.
 
 ---
 
